@@ -8,10 +8,10 @@ ItemIDs:<br />
 7501 - 4 digit unix time<br />
 7502 - 4th digit of unix time<br />
 7503 - 3rd digit of unix time<br />
-5704 - 2nd digit of unix time<br />
-5705 - 1st digit of unix time<br />
-5706 - 6 digits of unix time (longest geometry dash allows in an ItemID)<br />
-5707 - pseudo random 2 digit number based off of the unix time value<br />
+7504 - 2nd digit of unix time<br />
+7505 - 1st digit of unix time<br />
+7506 - 6 digits of unix time (longest geometry dash allows in an ItemID)<br />
+7507 - pseudo random 2 digit number based off of the unix time value<br />
 
 Credits:<br />
 Massive thank you to acaruso for help with the bindings and itemID updates.<br />

@@ -18,6 +18,6 @@ Massive thank you to acaruso for help with the bindings and itemID updates.<br /
 Also thank you to Xanii and Firee for help with the toggle checkbox.<br />
 
 Warning:<br />
-Please note that this mod is ILLEGITIMATE on the geometry dash leaderboards! Playing normal levels with this mod enabled in level settings is bannable!<br />
+Please note that this mod is illegitimate on the geometry dash leaderboards! Playing normal levels with this mod enabled in level settings is bannable!<br />
 This mod is meant to be used specifically on globed levels that utilize the features it provides.<br />
 Under no circumstances use this mod on rated levels, or do so at your own risk, you have been warned!<br />

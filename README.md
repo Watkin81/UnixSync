@@ -1,6 +1,6 @@
 # Geometry Dash Unix Sync
 
-A tiny mod for geometry dash that updates ItemIDs 7501-7507 to be set to current unix time values.<br />
+A tiny mod for geometry dash that updates ItemIDs 7501-7513 to be set to current unix time values.<br />
 This allows for levels to sync between players with the globed mod.<br />
 The functionality of this mod can be enabled via level options.<br />
 

@@ -11,7 +11,13 @@ ItemIDs:<br />
 7504 - 2nd digit of unix time<br />
 7505 - 1st digit of unix time<br />
 7506 - 6 digits of unix time (longest geometry dash allows in an ItemID)<br />
-7507 - pseudo random 2 digit number based off of the unix time value<br />
+7507 - pseudo random 2 digit number based off of the unix time value as a random seed<br />
+7508 - current year<br />
+7509 - current month<br />
+7510 - current day<br />
+7511 - current hour (UTC)<br />
+7512 - current minute<br />
+7513 - current second<br />
 
 Credits:<br />
 Massive thank you to acaruso for help with the bindings and itemID updates.<br />

@@ -7,29 +7,33 @@
 #include <Geode/modify/PlayLayer.hpp>
 #include <chrono>
 #include <ctime>
+#include <random>
 
 using namespace geode::prelude;
 
 int currentTime_t = 0;
 int currentTime_unix = 0;
 bool is_enabled = false;
+//int timeZoneOffset = -5;
+int lastUnix = 99999999999;
 
-class $modify(GJBaseGameLayer) {
+class $modify(MyBaseGameLayer, GJBaseGameLayer) {
     void update(float delta) override {
         GJBaseGameLayer::update(delta);
         if (is_enabled) {
-		//if (Mod::get()->getSettingValue<bool>("enable")) {
+            if (currentTime_unix != lastUnix) { // run once a second
+                oncePerSecond(1.f);
+            }
+
             auto currentTime = std::chrono::system_clock::now();
             currentTime_t = std::chrono::system_clock::to_time_t(currentTime);
-            int currentTime_unix = currentTime_t;
+            currentTime_unix = currentTime_t;
             int currentTime_full = currentTime_t % 1000000;
             currentTime_t = currentTime_t % 10000;
             int digit1 = currentTime_t % 10;
             int digit2 = (currentTime_t / 10) % 10;
             int digit3 = (currentTime_t / 100) % 10;
             int digit4 = (currentTime_t / 1000) % 10;
-            int pseudo_random = (((currentTime_t * 2345) + 6789) / 10) % 100;
-            //log::info("time val: {}", currentTime_t);
             m_effectManager->updateCountForItem(7501, currentTime_t);
             updateCounters(7501, currentTime_t);
             m_effectManager->updateCountForItem(7505, digit1);
@@ -40,23 +44,57 @@ class $modify(GJBaseGameLayer) {
             updateCounters(7503, digit3);
             m_effectManager->updateCountForItem(7502, digit4);
             updateCounters(7502, digit4);
-            m_effectManager->updateCountForItem(7507, pseudo_random);
-            updateCounters(7507, pseudo_random);
             if (currentTime_full > 999999) {
                 currentTime_full = 999999;
             }
             m_effectManager->updateCountForItem(7506, currentTime_full);
-            updateCounters(7506, currentTime_full);
-            //log::info("number updated");
+                updateCounters(7506, currentTime_full);
+            //log::info("ItemIDs Updated");
+            //log::info("last: {}", lastUnix);
+            //log::info("current: {}", currentTime_unix);
 
             if (PlayLayer::get() != nullptr) {
                 auto playLayer = PlayLayer::get();
                 if (auto unixNode = typeinfo_cast<CCNode*>(playLayer->getChildByID("unixtimestamp"))) {
                     auto unixLabel = static_cast<CCLabelBMFont*>(unixNode->getChildren()->objectAtIndex(0));
-                    unixLabel->setString(fmt::format("Unix Enabled ({})", currentTime_unix).c_str());
+                    if (Mod::get()->getSettingValue<bool>("showunix")) {
+                        unixLabel->setString(fmt::format("Unix Enabled ({})", currentTime_unix).c_str());
+                    } else {
+                        unixLabel->setString("Unix On");
+                    }
                 }
             }
         }
+    }
+
+    void oncePerSecond(float) {
+        //log::info("Once Per Second");
+        std::mt19937 rng(currentTime_unix);
+        std::uniform_int_distribution<int> distribution(0, 99);
+        int pseudo_random = distribution(rng);
+        m_effectManager->updateCountForItem(7507, pseudo_random);
+        updateCounters(7507, pseudo_random);
+        time_t time_seconds = static_cast<time_t>(currentTime_unix);
+        tm* timeInfoUTC = gmtime(&time_seconds);
+        int currentYear = timeInfoUTC->tm_year + 1900;
+        int currentMonth = timeInfoUTC->tm_mon + 1;
+        int currentDay = timeInfoUTC->tm_mday;
+        int currentHourEST = (timeInfoUTC->tm_hour);
+        int currentMinute = timeInfoUTC->tm_min;
+        int currentSecond = timeInfoUTC->tm_sec;
+        m_effectManager->updateCountForItem(7508, currentYear);
+        updateCounters(7508, currentYear);
+        m_effectManager->updateCountForItem(7509, currentMonth);
+        updateCounters(7509, currentMonth);
+        m_effectManager->updateCountForItem(7510, currentDay);
+        updateCounters(7510, currentDay);
+        m_effectManager->updateCountForItem(7511, currentHourEST);
+        updateCounters(7511, currentHourEST);
+        m_effectManager->updateCountForItem(7512, currentMinute);
+        updateCounters(7512, currentMinute);
+        m_effectManager->updateCountForItem(7513, currentSecond);
+        updateCounters(7513, currentSecond);
+        lastUnix = currentTime_unix;
     }
 };
 
@@ -84,11 +122,11 @@ class $modify(UnixTimeSwap, GameLevelOptionsLayer) {
         menu->addChild(btn);
         addChild(menu);
         handleTouchPriority(this);
-        //log::info("{}", is_enabled);
     }
 
     void enable_unix(CCObject*) {
         is_enabled = !is_enabled;
+        log::info("UnixSync Status: {}", is_enabled);
     }
 };
 
@@ -98,8 +136,13 @@ class $modify(PlayLayer) {
         if (is_enabled) {
             auto winSize = CCDirector::sharedDirector()->getWinSize();
 
-            auto enabledDisplay = CCLabelBMFont::create("it bugged :(", "bigFont.fnt");
-            enabledDisplay->setPosition(60, 5);
+            auto enabledDisplay = CCLabelBMFont::create("<text here>", "bigFont.fnt");
+            if (Mod::get()->getSettingValue<bool>("showunix")) {
+                enabledDisplay->setPosition(60, 5);
+            }
+            else {
+                enabledDisplay->setPosition(19, 5);
+            }
             enabledDisplay->setScale(0.25);
             enabledDisplay->setOpacity(127);
             auto node = CCNode::create();

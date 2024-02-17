@@ -5,5 +5,13 @@
 	"id": "creatorcreepy.unixsync",
 	"name": "UnixSync",
 	"developer": "CreatorCreepy",
-	"description": "Allows for the usage of unix time in gd."
+	"description": "Allows for the usage of unix time in gd.",
+	"settings": {
+		"showunix": {
+			"name": "Show Unix",
+			"type": "bool",
+			"default": false,
+			"description": "Shows the current unix time on screen while in levels."
+		}
+	}
 }

@@ -1,8 +1,8 @@
 # Geometry Dash Unix Sync
 
 A tiny mod for geometry dash that updates ItemIDs 7501-7513 to be set to current unix, date, and time values.<br />
-This allows for levels to sync between players with the globed mod.<br />
-The functionality of this mod can be enabled via level options.<br />
+This allows for local levels to be synced between players with triggers.<br />
+The functionality of this mod can be enabled per level via level options.<br />
 The unix timestamp in the corner of the screen can be removed via mod options.<br />
 
 ItemIDs:<br />
@@ -25,6 +25,5 @@ Massive thank you to acaruso for help with the bindings and itemID updates.<br /
 Also thank you to Xanii, Firee, TechStudent11 and for their help with the mod.<br />
 
 Warning:<br />
-Please note that this mod is illegitimate on the geometry dash leaderboards! Playing normal levels with this mod enabled in level settings is bannable!<br />
-This mod is meant to be used specifically on globed levels that utilize the features it provides.<br />
-Under no circumstances use this mod on rated levels, or do so at your own risk, you have been warned!<br />
+Please note that this mod alters ItemIDs in game, and may be considered illegitimate.<br />
+This mod is intended to enabled only on levels that utilize its functionality.

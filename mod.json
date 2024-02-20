@@ -6,6 +6,7 @@
 	"name": "UnixSync",
 	"developer": "CreatorCreepy",
 	"description": "Allows for the usage of unix time in gd.",
+	"repository": "https://github.com/Watkin81/UnixSync",
 	"settings": {
 		"showunix": {
 			"name": "Show Unix",

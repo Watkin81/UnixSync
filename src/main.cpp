@@ -1,4 +1,4 @@
-// v1.3.0
+// v1.3.1
 #include <Geode/Geode.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
@@ -21,6 +21,7 @@ int currentTime_t = 0;
 int currentTime_unix = 0;
 bool is_enabled = false;
 bool uses_unix = false;
+bool displayedText = false;
 //int timeZoneOffset = -5;
 int lastUnix = 99999999999;
 GameObject* object;
@@ -47,6 +48,9 @@ class $modify(UnixTimeSwap, LevelOptionsLayer) {
 
     void setupOptions() {
         LevelOptionsLayer::setupOptions();
+        auto infoButtonSprite = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
+        infoButtonSprite->setScale(0.5);
+        auto infoButton = CCMenuItemSpriteExtra::create(infoButtonSprite, this, menu_selector(UnixTimeSwap::onInfoClick));
         CCMenu* menu = CCMenu::create();
         auto toggleOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
         auto toggleOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
@@ -63,17 +67,24 @@ class $modify(UnixTimeSwap, LevelOptionsLayer) {
 
         //btn->setPosition({316,182.8}); sorry Xanii D:
         btn->setPosition({125,80});
+        infoButton->setPosition({107,96});
         btn->setScale(0.82);
-
         label->setPosition({btn->getPositionX() + 54, btn->getPositionY()});
         label->setScale(0.4);
         addChild(label);
 
         menu->setPosition({0,0});
+        menu->addChild(infoButton);
         menu->addChild(btn);
         addChild(menu);
         handleTouchPriority(this);
     }
+
+    void onInfoClick(CCObject*) {
+        FLAlertLayer::create("Info",
+        "Enables unix time functionality in this level for all UnixSync users.\nThis will update ItemIDs 7501-7513.\nIf the IDs are not updating in editor testmode, reenter the editor and the IDs will update.",
+        "OK")->show();
+    };
 
     void enable_unix(CCObject*) {
         is_enabled = !is_enabled;
@@ -82,6 +93,7 @@ class $modify(UnixTimeSwap, LevelOptionsLayer) {
             TextGameObject* textObject = static_cast<TextGameObject*>(object);
             textObject->m_text = std::string("~!ThisTextEnablesUnix!~");
         }
+        
         else if (!is_enabled) {
             for (auto* obj: CCArrayExt<GameObject*>(GameManager::sharedState()->getEditorLayer()->m_objects)) {
                 if (obj->m_objectID == 914) {
@@ -98,23 +110,37 @@ class $modify(UnixTimeSwap, LevelOptionsLayer) {
 };
 
 class $modify(PlayLayer) {
-    bool init(GJGameLevel* p0, bool p1, bool p2) {
+    static PlayLayer* create(GJGameLevel* level, bool a1, bool a2) {
+        //log::info("run first??? please???");
+        displayedText = false;
+        return PlayLayer::create(level, a1, a2);
+    }
+
+    /*bool init(GJGameLevel* p0, bool p1, bool p2) {
         if (!PlayLayer::init(p0,p1,p2)) {
             return false;
         }
-
-        uses_unix = false;
-        for (auto* obj: CCArrayExt<GameObject*>(GameManager::sharedState()->getPlayLayer()->m_objects)) {
-            if (obj->m_objectID == 914) {
-                auto* text = static_cast<TextGameObject*>(obj);
-                if (text && text->m_text == std::string_view("~!ThisTextEnablesUnix!~")) {
-                    log::info("found UNIX text object, enabling UnixSync functionality on this level!");
-                    uses_unix = true;
+        displayedText = false;
+        return true;
+    }*/
+    
+    void updateAttempts() {
+        //log::info("displayText state: {}", displayedText);
+        if (!displayedText) {
+            uses_unix = false;
+            //log::info("objects in level: {}", m_player1->m_gameLayer->m_objects->count());
+            for (auto* obj: CCArrayExt<GameObject*>(m_player1->m_gameLayer->m_objects)) {
+                if (obj->m_objectID == 914) {
+                    auto* text = static_cast<TextGameObject*>(obj);
+                    if (text && text->m_text == std::string_view("~!ThisTextEnablesUnix!~")) {
+                        log::info("found UNIX text object, enabling UnixSync functionality on this level!");
+                        uses_unix = true;
+                    }
                 }
             }
         }
 
-        if (uses_unix) {
+        if (uses_unix && !displayedText) {
             auto winSize = CCDirector::sharedDirector()->getWinSize();
 
             auto enabledDisplay = CCLabelBMFont::create("<text here>", "bigFont.fnt");
@@ -132,7 +158,9 @@ class $modify(PlayLayer) {
             node->setID("unixtimestamp");
             this->addChild(node);
         }
-        return true;
+        displayedText = true;
+        //log::info("displayText state: {}", displayedText);
+        PlayLayer::updateAttempts();
     }
 };
 
